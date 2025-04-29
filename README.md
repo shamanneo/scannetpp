@@ -60,7 +60,7 @@ To train 3DGS on a scene from the ScanNet++ dataset, run:
 python train.py \
     --data_root [SCANNET++ DATA ROOT] \
     --output_path [OUTPUT DATA ROOT] \
-    --scene_id 39f36da05b
+    --scene_id [SCENE_ID]
 ```
 
 At the end of training, the rendered test images will be saved in the `[OUTPUT DATA ROOT]/submission` folder, following the [official submission format](https://kaldir.vc.in.tum.de/scannetpp/benchmark/docs). Once you have results for all test scenes, this folder can be then zipped and submitted to the ScanNet++ NVS benchmark server.
