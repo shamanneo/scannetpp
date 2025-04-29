@@ -4,6 +4,9 @@ This repository contains the code for training and evaluating 3D Gaussian Splatt
 ## Requirements
 The code has been tested with Python 3.9 and requires the following packages:
 ```
+git clone --recursive https://github.com/scannetpp/3DGS-demo 3dgs-demo
+cd 3dgs-demo
+
 conda create -n 3dgs-demo python=3.9
 conda activate 3dgs-demo
 
