@@ -1,8 +1,8 @@
-# 3D Gaussian Splatting on ScanNet++ dataset
-This repository contains the code for training and evaluating 3D Gaussian Splatting on the ScanNet++ dataset. The code is based on the original 3D Gaussian Splatting [github](https://github.com/graphdeco-inria/gaussian-splatting) and adapted to work with the ScanNet++ dataset.
+# 3D Gaussian Splatting on ScanNet++ Dataset
+This repository contains the code for training and evaluating 3D Gaussian Splatting on the ScanNet++ dataset. The code is based on the original 3D Gaussian Splatting [repository](https://github.com/graphdeco-inria/gaussian-splatting) and has been adapted to work with ScanNet++.
 
 ## Requirements
-The code is tested with Python 3.9 and requires the following packages:
+The code has been tested with Python 3.9 and requires the following packages:
 ```
 conda create -n 3dgs-demo python=3.9
 conda activate 3dgs-demo
@@ -14,7 +14,7 @@ pip install opencv-python plyfile tqdm open3d
 
 
 ## Dataset Preparation
-Apply and download the ScanNet++ dataset from [ScanNet++](https://kaldir.vc.in.tum.de/scannetpp/). The dataset after download should be organized as follows:
+Apply for and download the [ScanNet++ dataset](https://kaldir.vc.in.tum.de/scannetpp/). After downloading, the dataset should be organized as follows:
 ```
 scannet_download
 /cluster/andram/yliu/scannetpp_v2_official
@@ -25,8 +25,9 @@ scannet_download
 ├── metadata
 └── splits
 ```
+**NOTE**: This code is based on undistorted DSLR images. These are automatically provided if you download the dataset after **2025-04-29** using the updated download script. Otherwise, you can undistort the images manually using the script `scannetpp_tools/dslr/undistort.py`, following the [official instruction](https://github.com/scannetpp/scannetpp?tab=readme-ov-file#undistortion-convert-fisheye-images-to-pinhole-with-opencv).
 
-**NOTE**: The code is based on undistorted DSLR images with the following format which is automatically provided by downloading the dataset after **2025.04.29** using the new download script. Otherwise, you can use the provided script `scannetpp_tools/dslr/undistort.py` to undistort the images following the [instruction](https://github.com/scannetpp/scannetpp?tab=readme-ov-file#undistortion-convert-fisheye-images-to-pinhole-with-opencv).
+Expected directory format:
 ```
 scene_id/dslr
 ├── colmap
@@ -37,8 +38,8 @@ scene_id/dslr
 ```
 
 ## Visualization
-To visualize the camera poses and the meshes, you can use the provided viewer script. Make sure to have Open3D installed.
 
+To visualize camera poses and meshes, use the provided viewer script. Ensure that Open3D is installed:
 ```sh
 python viewer.py \
     --data_root [SCANNET++ DATA ROOT] \
@@ -47,12 +48,13 @@ python viewer.py \
     --load_mesh
 ```
 
-This will load the camera poses and the mesh for the specified scene ID and visualize them using Open3D as the following example:
+This will load the camera poses and the mesh for the specified scene ID and visualize them using Open3D, as shown below:
+
 ![visualization](assets/viewer_example1.png)
 
 
 ## Running
-To run 3DGS on a scene in ScanNet++ dataset, you can use the following command:
+To train 3DGS on a scene from the ScanNet++ dataset, run:
 
 ```sh
 python train.py \
@@ -61,11 +63,11 @@ python train.py \
     --scene_id 39f36da05b
 ```
 
-At the end of the training, it would render the testing images and stores them in `[OUTPUT DATA ROOT]/submission` folder, following the [official submission format](https://kaldir.vc.in.tum.de/scannetpp/benchmark/docs). Once you have all the testing scenes, this folder can be then zipped and submitted to the ScanNet++ NVS benchmark server.
+At the end of training, the rendered test images will be saved in the `[OUTPUT DATA ROOT]/submission` folder, following the [official submission format](https://kaldir.vc.in.tum.de/scannetpp/benchmark/docs). Once you have results for all test scenes, this folder can be then zipped and submitted to the ScanNet++ NVS benchmark server.
 
 
 ## Evaluation
-To evaluate the results (on validation sets), you can use the provided evaluation script in `scannetpp_tools` ([ScanNet++ Toolbox](https://github.com/scannetpp/scannetpp?tab=readme-ov-file#novel-view-synthesis-evaluation-dslr)).
+To evaluate the results (on validation sets), you can use the provided evaluation script in `scannetpp_tools` (part of the [ScanNet++ Toolbox](https://github.com/scannetpp/scannetpp?tab=readme-ov-file#novel-view-synthesis-evaluation-dslr)).
 ```sh
 cd scannetpp_tools
 # Evaluate on a single scene
@@ -74,7 +76,7 @@ python -m eval.nvs \
     --scene_id [SCENE_ID] \
     --pred_dir [OUTPUT DATA ROOT]/submission
 
-# Evaluate on the whole validation set
+# Evaluate on the entire validation set
 python -m eval.nvs \
     --data_root [SCANNET++ DATA ROOT] \
     --split [SCANNET++ SPLIT]/nvs_sem_val.txt \
