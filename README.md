@@ -26,6 +26,16 @@ scannet_download
 └── splits
 ```
 
+**NOTE**: The code is based on undistorted DSLR images with the following format which is automatically provided by downloading the dataset after **2025.04.29** using the new download script. Otherwise, you can use the provided script `scannetpp_tools/dslr/undistort.py` to undistort the images following the [instruction](https://github.com/scannetpp/scannetpp?tab=readme-ov-file#undistortion-convert-fisheye-images-to-pinhole-with-opencv).
+```
+scene_id/dslr
+├── colmap
+├── nerfstudio
+│   └── transforms_undistorted.json
+├── resized_undistorted_images
+└── resized_undistorted_masks
+```
+
 ## Visualization
 To visualize the camera poses and the meshes, you can use the provided viewer script. Make sure to have Open3D installed.
 
@@ -51,5 +61,22 @@ python train.py \
     --scene_id 39f36da05b
 ```
 
-At the end of the training, it would render the testing images and stores them in `[OUTPUT DATA ROOT]/submission` folder, following the (official submission format)[https://kaldir.vc.in.tum.de/scannetpp/benchmark/docs]. Once you have all the testing scenes, this folder can be then zipped and submitted to the ScanNet++ NVS benchmark server.
+At the end of the training, it would render the testing images and stores them in `[OUTPUT DATA ROOT]/submission` folder, following the [official submission format](https://kaldir.vc.in.tum.de/scannetpp/benchmark/docs). Once you have all the testing scenes, this folder can be then zipped and submitted to the ScanNet++ NVS benchmark server.
 
+
+## Evaluation
+To evaluate the results (on validation sets), you can use the provided evaluation script in `scannetpp_tools` ([ScanNet++ Toolbox](https://github.com/scannetpp/scannetpp?tab=readme-ov-file#novel-view-synthesis-evaluation-dslr)).
+```sh
+cd scannetpp_tools
+# Evaluate on a single scene
+python -m eval.nvs \
+    --data_root /cluster/andram/yliu/scannetpp_v2_official/data \
+    --scene_id [SCENE_ID] \
+    --pred_dir [OUTPUT DATA ROOT]/submission
+
+# Evaluate on the whole validation set
+python -m eval.nvs \
+    --data_root [SCANNET++ DATA ROOT] \
+    --split [SCANNET++ SPLIT]/nvs_sem_val.txt \
+    --pred_dir [OUTPUT DATA ROOT]/submission
+```
