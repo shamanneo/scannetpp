@@ -72,7 +72,7 @@ To evaluate the results (on validation sets), you can use the provided evaluatio
 cd scannetpp_tools
 # Evaluate on a single scene
 python -m eval.nvs \
-    --data_root /cluster/andram/yliu/scannetpp_v2_official/data \
+    --data_root [SCANNET++ DATA ROOT] \
     --scene_id [SCENE_ID] \
     --pred_dir [OUTPUT DATA ROOT]/submission
 
