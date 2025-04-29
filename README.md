@@ -43,7 +43,7 @@ To visualize camera poses and meshes, use the provided viewer script. Ensure tha
 ```sh
 python viewer.py \
     --data_root [SCANNET++ DATA ROOT] \
-    --scene_id 39f36da05b \
+    --scene_id [SCENE_ID] \
     --load_camera \
     --load_mesh
 ```
