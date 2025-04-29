@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, Dict, Literal
+from typing import Optional, Tuple, Dict, Literal, List
 import os
 from pathlib import Path
 from copy import deepcopy
@@ -159,6 +159,14 @@ class ScannetppDataset(Dataset):
         radius = np.max(dists) * 1.1
         translate = -avg_camera_center
         return {"radius": radius, "translate": translate}
+
+    def get_image_names(self) -> List[str]:
+        """Get the image names from the dataset."""
+        image_names = []
+        for image_path in self.image_paths:
+            image_name = os.path.basename(image_path)
+            image_names.append(image_name)
+        return image_names
 
     def _get_3dgs_info(
         self,
