@@ -3,7 +3,6 @@ from typing import Optional, Tuple, List, Dict, Union, Callable
 import os
 import sys
 
-
 from tqdm import tqdm
 from PIL import Image
 import numpy as np
@@ -106,10 +105,9 @@ def training(
     train_loader, train_dataset, test_dataset = get_dataloader(
         data_root,
         scene_id,
-        # preload_images=True,
+        # Preload images into CPU or GPU by setting preload_images=True could help speed up training.
+        # However, it might not be possible for larger scenes.
         preload_images=False,
-        # preload_device="cpu",
-        # preload_device="cuda",
         preload_device=model_params.data_device,
     )
 

@@ -23,6 +23,7 @@ class ScannetppDataset(Dataset):
         split: Literal["train", "test"] = "train",
         preload_images: bool = True,
         max_images: int = -1,
+        return_images: bool = True,
     ):
         """
         Args:
@@ -38,6 +39,7 @@ class ScannetppDataset(Dataset):
         assert split in ["train", "test"], "split must be 'train' or 'test'"
         self.split = split
         self.preload_images = preload_images
+        self.return_images = return_images
         self.znear = 0.01
         self.zfar = 100.0
 
@@ -58,6 +60,9 @@ class ScannetppDataset(Dataset):
         self.width = int(transforms["w"])
         self.fx = float(transforms["fl_x"])
         self.fy = float(transforms["fl_y"])
+        self.cx = float(transforms["cx"])
+        self.cy = float(transforms["cy"])
+        self.K = np.array([[self.fx, 0, self.cx], [0, self.fy, self.cy], [0, 0, 1]])
         self.fovx = focal2fov(self.fx, self.width)
         self.fovy = focal2fov(self.fy, self.height)
 
@@ -194,18 +199,20 @@ class ScannetppDataset(Dataset):
         return outputs
 
     def __getitem__(self, idx: int):
-        if self.preload_images:
-            image = self.images[idx]
-            mask = self.masks[idx] if self.has_mask else None
-        else:
-            image_path = self.image_paths[idx]
-            mask_path = self.mask_paths[idx]
-            image = self.load_image(image_path)
-            mask = self.load_mask(mask_path)
+        image_path = self.image_paths[idx]
+        mask_path = self.mask_paths[idx]
+        image_name = os.path.basename(image_path)
 
-        image_name = os.path.basename(self.image_paths[idx])
-        image = torch.from_numpy(image)
-        mask = torch.from_numpy(mask).unsqueeze(0) if mask is not None else None
+        if self.return_images:
+            if self.preload_images:
+                image = self.images[idx]
+                mask = self.masks[idx] if self.has_mask else None
+            else:
+                image = self.load_image(image_path)
+                mask = self.load_mask(mask_path)
+
+            image = torch.from_numpy(image)
+            mask = torch.from_numpy(mask).unsqueeze(0) if mask is not None else None
 
         pose = self.poses[idx]
         world_to_camera = np.linalg.inv(pose)
@@ -214,15 +221,21 @@ class ScannetppDataset(Dataset):
             fov_x=self.fovx,
             fov_y=self.fovy,
         )
+        intrinsic = torch.from_numpy(self.K).float()
+
+        if self.return_images:
+            outputs.update({
+                "image": image,
+                "mask": mask,
+            })
 
         outputs.update({
-            "image": image,
             "camera_to_world": pose,
-            "image_path": self.image_paths[idx],
-            "mask_path": self.mask_paths[idx] if self.has_mask else None,
-            "mask": mask,
+            "image_path": image_path,
+            "mask_path": mask_path if self.has_mask else None,
             "image_width": self.width,
             "image_height": self.height,
+            "intrinsic": intrinsic,
             "fovx": self.fovx,
             "fovy": self.fovy,
             "znear": self.znear,
