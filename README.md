@@ -86,3 +86,11 @@ python -m eval.nvs \
     --split [SCANNET++ SPLIT]/nvs_sem_val.txt \
     --pred_dir [OUTPUT DATA ROOT]/submission
 ```
+
+## Benchmark
+
+The table shows the ScanNet++ NVS benchmark results trained by this repository.
+
+| | PSNR | SSIM | LPIPS |
+| --- | --- | --- | --- |
+| DSLR (undistorted, small set) | 23.3822 | 0.8790 | 0.2989 |
