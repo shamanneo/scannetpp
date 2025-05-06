@@ -364,7 +364,7 @@ if __name__ == "__main__":
 
     parser.add_argument("--data_root", type=str, required=True)
     parser.add_argument("--output_root", type=str, required=True)
-    parser.add_argument("--scene_id", type=str, required=True)
+    parser.add_argument("--scene_ids", type=str, nargs="+", required=True)
 
     args = parser.parse_args()
     args.save_iterations.append(args.iterations)
@@ -373,15 +373,18 @@ if __name__ == "__main__":
     safe_state(args.quiet)
 
     torch.autograd.set_detect_anomaly(args.detect_anomaly)
-    training(
-        args.data_root,
-        args.scene_id,
-        args.output_root,
-        lp.extract(args),
-        op.extract(args),
-        pp.extract(args),
-        # args.test_iterations,
-        args.test_every,
-        args.save_iterations,
-        args.checkpoint_iterations,
-    )
+
+    for scene_id in args.scene_ids:
+        print(f"[INFO] Optimize {scene_id}")
+        training(
+            args.data_root,
+            scene_id,
+            args.output_root,
+            lp.extract(args),
+            op.extract(args),
+            pp.extract(args),
+            # args.test_iterations,
+            args.test_every,
+            args.save_iterations,
+            args.checkpoint_iterations,
+        )
