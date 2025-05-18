@@ -95,6 +95,7 @@ def training(
     data_root: str,
     scene_id: str,
     output_path: str,
+    preload_images: bool,
     model_params: ModelParams,
     opt_params: OptimizationParams,
     pipeline_params: PipelineParams,
@@ -107,7 +108,7 @@ def training(
         scene_id,
         # Preload images into CPU or GPU by setting preload_images=True could help speed up training.
         # However, it might not be possible for larger scenes.
-        preload_images=False,
+        preload_images=preload_images,
         preload_device=model_params.data_device,
     )
 
@@ -365,6 +366,7 @@ if __name__ == "__main__":
     parser.add_argument("--data_root", type=str, required=True)
     parser.add_argument("--output_root", type=str, required=True)
     parser.add_argument("--scene_id", type=str, required=True)
+    parser.add_argument("--preload_images", type=bool, required=True)
 
     args = parser.parse_args()
     args.save_iterations.append(args.iterations)
@@ -377,6 +379,7 @@ if __name__ == "__main__":
         args.data_root,
         args.scene_id,
         args.output_root,
+        args.preload_images,
         lp.extract(args),
         op.extract(args),
         pp.extract(args),
